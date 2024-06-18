@@ -1,5 +1,7 @@
 library(shiny)
 library(DT)
+library(dplyr)
+library(stringr)
 
 shinyServer(function(input,output,session){
   #_______ summary.txt____________________________
@@ -72,7 +74,7 @@ shinyServer(function(input,output,session){
     
     
     # Function to remove replicates name in condition
-    library(stringr)
+    
     ReplicateNames <- replicate_names
     remove_strings <- function(text, patterns) {
       for (pattern in patterns) {
