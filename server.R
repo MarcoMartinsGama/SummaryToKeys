@@ -91,7 +91,7 @@ shinyServer(function(input,output,session){
   
   output$downloadkeys <- downloadHandler(filename = function(){
   "keys.txt"},content= function(file){
-    write.table(keys$df,file,row.names = FALSE)
+    write.table(keys$df,file,row.names = FALSE,sep = "\t")
   })
   #_______________________________________________
   
