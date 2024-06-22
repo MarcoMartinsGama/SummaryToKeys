@@ -1,12 +1,14 @@
 library(shiny)
-if (!requireNamespace("DT", quietly = TRUE))install.packages("DT")
-if (!requireNamespace("dplyr", quietly = TRUE))install.packages("dplyr")
-if (!requireNamespace("stringr", quietly = TRUE))install.packages("stringr")
-library(DT)
-library(dplyr)
-library(stringr)
 
 shinyServer(function(input,output,session){
+  
+  if (!requireNamespace("DT", quietly = TRUE))install.packages("DT")
+  if (!requireNamespace("dplyr", quietly = TRUE))install.packages("dplyr")
+  if (!requireNamespace("stringr", quietly = TRUE))install.packages("stringr")
+  library(DT)
+  library(dplyr)
+  library(stringr)
+  
   #_______ summary.txt____________________________
   
     # Output uploaded file
