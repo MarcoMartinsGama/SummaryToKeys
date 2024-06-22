@@ -2,12 +2,28 @@ library(shiny)
 
 shinyServer(function(input,output,session){
   
-  if (!require("DT")) install.packages('DT')
-  if (!requireNamespace("dplyr", quietly = TRUE))install.packages("dplyr")
-  if (!requireNamespace("stringr", quietly = TRUE))install.packages("stringr")
-  library(DT)
-  library(dplyr)
-  library(stringr)
+# Packages installation
+  
+  if (!requireNamespace("DT", quietly = TRUE)) {
+    install.packages("DT")
+    library(DT)
+  } else {
+    library(DT)
+  }
+  
+  if (!requireNamespace("dplyr", quietly = TRUE)) {
+    install.packages("dplyr")
+    library(dplyr)
+  } else {
+    library(dplyr)
+  }
+  
+  if (!requireNamespace("stringr", quietly = TRUE)) {
+    install.packages("stringr")
+    library(stringr)
+  } else {
+    library(stringr)
+  }
   
   #_______ summary.txt____________________________
   
@@ -109,9 +125,4 @@ shinyServer(function(input,output,session){
   
   
   
-}) # }function )shinyServer
-
-
-# Variable 1 "summary" = summary
-# Variable 2 "ControlID$value" = ControlID
-# variable 3 " values$replicate_names" = ReplicateNames
+})
