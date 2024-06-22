@@ -2,7 +2,7 @@ library(shiny)
 
 shinyServer(function(input,output,session){
   
-  if (!requireNamespace("DT", quietly = TRUE))install.packages("DT")
+  if (!require("DT")) install.packages('DT')
   if (!requireNamespace("dplyr", quietly = TRUE))install.packages("dplyr")
   if (!requireNamespace("stringr", quietly = TRUE))install.packages("stringr")
   library(DT)
