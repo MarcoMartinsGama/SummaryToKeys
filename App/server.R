@@ -2,18 +2,20 @@ library(shiny)
 if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
 if (!requireNamespace("DT", quietly = TRUE)) install.packages("DT")
 if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("data.table")
 
 
 library(stringr)
 library(DT)
 library(data.table)
+library(dplyr)
 
-shinyServer(function(input,output,session){
+function(input,output,session){
   
   
       # Render and read summary.txt
   
-      output$summaryout <- renderDT({req(input$summaryfile)
+      output$summaryout <- renderDataTable({req(input$summaryfile)
         summary<- read.table(input$summaryfile$datapath,
                              header=TRUE,
                              sep="\t") 
@@ -92,11 +94,11 @@ shinyServer(function(input,output,session){
     keys$df <- keys$df %>%
       mutate(Condition= remove_strings(Condition, 
                                        ReplicateNames)) # Remove replicate names in Condition column
-    output$keysout <- renderDT(keys$df, rownames = FALSE) # Render the keys table
+    output$keysout <- renderDataTable(keys$df, rownames = FALSE) # Render the keys table
   })
   
   output$downloadkeys <- downloadHandler(filename = function(){
   "keys.txt"},content= function(file){
     write.table(keys$df,file,row.names = FALSE,sep = "\t")
   }) # Download keys.txt with button
-})
+}

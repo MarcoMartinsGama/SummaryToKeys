@@ -1,6 +1,6 @@
 library(shiny)
 
-shinyUI(fluidPage(
+fluidPage(
   titlePanel("Convert summary.txt to keys.txt"),
   sidebarLayout(
   sidebarPanel(
@@ -27,11 +27,8 @@ shinyUI(fluidPage(
     # Convert to keys.txt and download button compatible with shinylive website
     
     actionButton("convert","Convert to keys.txt"),
-    downloadButton <- function(...) {
-      tag <- shiny::downloadButton("downloadkeys", "Download keys.txt !")
-      tag$attribs$download <- NULL
-      tag},
-    fluidRow(style = 'height: 200px; overflow-x: auto',DT::dataTableOutput("keysout"))
+    downloadButton("downloadkeys", "Download keys.txt !"),
+    fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("keysout"))
   ),
   
   mainPanel(
@@ -39,6 +36,5 @@ shinyUI(fluidPage(
     # Output tables
     fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("summaryout"))
    )
-  )
   )
   )
