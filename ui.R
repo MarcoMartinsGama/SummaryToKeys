@@ -1,5 +1,6 @@
 library(shiny)
-library(DT)
+
+
 
 shinyUI(fluidPage(
   titlePanel("Convert summary.txt to keys.txt"),

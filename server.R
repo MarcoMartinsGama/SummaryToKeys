@@ -1,8 +1,14 @@
 library(shiny)
-if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
-library(stringr)
 
-shinyServer(function(input,output,session){
+if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
+if (!requireNamespace("DT", quietly = TRUE)) install.packages("DT")
+if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")
+
+library(stringr)
+library(DT)
+library(data.table)
+
+    function(input,output,session){
   
   
       # Render and read summary.txt
@@ -93,4 +99,4 @@ shinyServer(function(input,output,session){
   "keys.txt"},content= function(file){
     write.table(keys$df,file,row.names = FALSE,sep = "\t")
   }) # Download keys.txt with button
-})
+}
