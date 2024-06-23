@@ -3,46 +3,40 @@ library(DT)
 
 shinyUI(fluidPage(
   titlePanel("Convert summary.txt to keys.txt"),
-  sidebarLayout(#sidebarlayout
+  sidebarLayout(
   sidebarPanel(
-    #________ summary.txt input_______________________
+    width = 6, # Better side panel
+    
+    # Input summary.txt
+    
       fileInput("summaryfile","Input summary.txt",
                 accept = c("text/plain",".txt")),
     
-    #________________________________________________
-    #_______ _________CONTROL NAME___________________
-    #Input Control name and input save
+    # Input Control name and save
     textInput("ControlName","Name of the control",value = ""),
     actionButton("ControlNameSave","Save"),
+    textOutput("ControlIDOutput"), # message confirmation
+
     
-    # Output the saving 
-    verbatimTextOutput("ControlIDOutput"),
-    #__________________________________________________
-    #_______________Replicate names input______________
-    actionButton("add_row","Add row"),
-    actionButton("remove_row","Remove row"),
-    
-    #_________________________________________________
-    #_______________Replicate names output______________
+    # Input replicate names 
     uiOutput("dynamic_replicate"),
     actionButton("save_replicate_names","Save"),
-    verbatimTextOutput("replicate_names_output"),
+    actionButton("add_row","Add row"),
+    actionButton("remove_row","Remove row"),
+    textOutput("replicate_names_output"),
   
-    #_________________________________________________
-    #________________CONVERT__________________________
+    # Convert to keys.txt and download button compatible with shinylive website
+    
     actionButton("convert","Convert to keys.txt"),
-    downloadButton("downloadkeys", "Download keys.txt !")
-    #________________________________________________
+    downloadButton("downloadkeys", "Download keys.txt !"),
+    fluidRow(style = 'height: 200px; overflow-x: auto',DT::dataTableOutput("keysout"))
   ),
   
   mainPanel(
-    #________ summary.txt output___________________________
-    DTOutput("summaryout"),
-    DTOutput("keysout")
-    
-    #______________________________________________________
-  
-    )#mainPanel
- 
-   ) #sidebarLayout
-  )) #UI et fluidpage
+    width = 5, # Better main panel
+    # Output tables
+    fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("summaryout"))
+   )
+  )
+  )
+  )

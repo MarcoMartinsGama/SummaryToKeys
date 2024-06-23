@@ -1,128 +1,96 @@
 library(shiny)
+if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
+library(stringr)
 
 shinyServer(function(input,output,session){
   
-# Packages installation
   
-  if (!requireNamespace("DT", quietly = TRUE)) {
-    install.packages("DT")
-    library(DT)
-  } else {
-    library(DT)
-  }
+      # Render and read summary.txt
   
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    install.packages("dplyr")
-    library(dplyr)
-  } else {
-    library(dplyr)
-  }
-  
-  if (!requireNamespace("stringr", quietly = TRUE)) {
-    install.packages("stringr")
-    library(stringr)
-  } else {
-    library(stringr)
-  }
-  
-  #_______ summary.txt____________________________
-  
-    # Output uploaded file
       output$summaryout <- renderDT({req(input$summaryfile)
-        
-        #Read the uploaded file 
         summary<- read.table(input$summaryfile$datapath,
                              header=TRUE,
-                             sep="\t")
-        return(summary)
-        })
-  #_______________________________________________
-  #_______ CONTROL NAME___________________________
+                             sep="\t") 
+                  return(summary)
+        }, rownames = FALSE)
+      
+      # Control ID saving
+      
   ControlID <- reactiveValues(value = character(0))
   observeEvent(input$ControlNameSave, {
     ControlID$value <- input$ControlName
-    output$ControlIDOutput <- renderPrint("Saved !, make sure only controls contain this name")
+    output$ControlIDOutput <- renderText({"Saved !, make sure only controls contain this name"})
   })
-  #_______________________________________________
-  #_______________Replicate names input___________
-  values <- reactiveValues(rows = 4, replicate_names = character(0))
+    # Replicate IDs, manage rows and save
+  values <- reactiveValues(rows = 4, replicate_names = character(0)) # Create 4 rows to write in
   
   observeEvent(input$add_row, {
-    values$rows <- values$rows + 1
-  })
+    values$rows <- values$rows + 1 
+  })  # Add 1 row with button
   
   observeEvent(input$remove_row, {
     if (values$rows > 1) {
       values$rows <- values$rows - 1
     }
-  })
+  }) # Remove 1 row with button
   
   output$dynamic_replicate <- renderUI({
     lapply(1:values$rows, function(i) {
       textInput(inputId = paste0("replicate_", i), label = paste("Replicate Tag", i))
     })
-  })
+  }) # Render UI to write replicate names and manage row number
   
   observeEvent(input$save_replicate_names, {
     replicate_names <- sapply(1:values$rows, function(i) {
       input[[paste0("replicate_", i)]]
-    })
+    }) 
     values$replicate_names <- replicate_names
-    output$replicate_names_output <- renderPrint("Saved !")
-  })
+    output$replicate_names_output <- renderText({"Saved !"})
+  }) # Save Replicate names with a button
   
 
-  #_______________________________________________
-  #_______________convert_________________________
-  keys <- reactiveValues(df = NULL)
+  # Convert summary.txt to keys.txt
+  
+  keys <- reactiveValues(df = NULL) # Create empty dataframe "keys"
+  
   observeEvent(input$convert,{
-    summary <- read.table(input$summaryfile$datapath, header = TRUE, sep = "\t")
-    replicate_names <- values$replicate_names
-    ControlID_name <- ControlID$value
+    summary <- read.table(input$summaryfile$datapath, header = TRUE, sep = "\t") # read summary.txt
+    replicate_names <- values$replicate_names  # Copy replicate names
+    ControlID_name <- ControlID$value # Copy control ID
     
-    keys$df<- summary %>% select(Raw.file) %>%  #Copy Raw.file
-      mutate(BioReplicate= summary$Experiment) %>% #Copy Experiment and change column name
+    keys$df<- summary %>% select(Raw.file) %>%  #Copy Raw.file column
+      mutate(BioReplicate= summary$Experiment) %>% #Copy Experiment and change column name to Bioreplicate
       mutate(IsotopeLabelType="L") %>%  # Create IsotopeLabelType column with "L" everywhere
       mutate(Run = row_number()) %>%    # Create Run with number same as the row number
       mutate(SAINT = ifelse(
         grepl(ControlID_name, BioReplicate), "C", "T")) # If replicate has the ControlId in its name,
-    # Row will have C (control), otherwise T (test) 
-    keys$df <- keys$df %>% 
-      mutate(Condition= summary$Experiment) %>%  # Create Condition column from summary
-      select(Condition,everything()) # Places it first
+    # Row will have C (control), otherwise T (test) in the column SAINT
     
-    keys$df <- keys$df %>% slice(-n()) # Remove the Total row from summary
+    keys$df <- keys$df %>%  # Next steps need to be separated to work correctly,copies itself
+      mutate(Condition= summary$Experiment) %>%  # Create Condition column from summary
+      select(Condition,everything()) # Places as first column
+    
+    keys$df <- keys$df %>% slice(-n()) # Remove the artefact Total row from summary
     
     
     # Function to remove replicates name in condition
     
-    ReplicateNames <- replicate_names
+    ReplicateNames <- replicate_names # Copy replicate names
     remove_strings <- function(text, patterns) {
       for (pattern in patterns) {
         text <- str_replace_all(text, pattern, "")
-      }
+      } 
       return(text)
-    }
+    } # Replace the patterns from replicate names by an empty text
     
     keys$df <- keys$df %>%
       mutate(Condition= remove_strings(Condition, 
                                        ReplicateNames)) # Remove replicate names in Condition column
-    output$keysout <- renderDT(keys$df)
+    output$keysout <- renderDT(keys$df, rownames = FALSE) # Render the keys table
   })
   
   output$downloadkeys <- downloadHandler(filename = function(){
   "keys.txt"},content= function(file){
     write.table(keys$df,file,row.names = FALSE,sep = "\t")
-  })
-  #_______________________________________________
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  }) # Download keys.txt with button
 })
