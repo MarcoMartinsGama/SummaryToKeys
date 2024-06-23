@@ -1,5 +1,11 @@
 library(shiny)
 
+  # Ensures proper download on website
+downloadButton <- function() {
+  tag <- shiny::downloadButton("keys", "Download keys.txt !")
+  tag$attribs$download <- NULL
+  tag}
+
 fluidPage(
   titlePanel("Convert summary.txt to keys.txt"),
   sidebarLayout(
@@ -27,10 +33,7 @@ fluidPage(
     # Convert to keys.txt and download button compatible with shinylive website
     
     actionButton("convert","Convert to keys.txt"),
-    downloadButton <- function() {
-      tag <- shiny::downloadButton("keys", "Download keys.txt !")
-      tag$attribs$download <- NULL
-      tag},
+    shiny::downloadButton("keys", "Download keys.txt !"),
     fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("keysout"))
   ),
   
