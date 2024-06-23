@@ -27,7 +27,10 @@ fluidPage(
     # Convert to keys.txt and download button compatible with shinylive website
     
     actionButton("convert","Convert to keys.txt"),
-    downloadButton("downloadkeys", "Download keys.txt !"),
+    downloadButton <- function() {
+      tag <- shiny::downloadButton("keys", "Download keys.txt !")
+      tag$attribs$download <- NULL
+      tag},
     fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("keysout"))
   ),
   

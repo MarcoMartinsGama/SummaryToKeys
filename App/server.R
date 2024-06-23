@@ -97,8 +97,9 @@ function(input,output,session){
     output$keysout <- renderDataTable(keys$df, rownames = FALSE) # Render the keys table
   })
   
-  output$downloadkeys <- downloadHandler(filename = function(){
+  output$keys <- downloadHandler(filename = function(){ # Download keys.txt with button
   "keys.txt"},content= function(file){
     write.table(keys$df,file,row.names = FALSE,sep = "\t")
-  }) # Download keys.txt with button
+  },
+  contentType = "text/plain" ) 
 }
