@@ -3,10 +3,12 @@ library(shiny)
 if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
 if (!requireNamespace("DT", quietly = TRUE)) install.packages("DT")
 if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("data.table")
 
 library(stringr)
 library(DT)
 library(data.table)
+library(dplyr)
 
     function(input,output,session){
   
