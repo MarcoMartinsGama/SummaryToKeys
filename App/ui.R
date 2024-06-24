@@ -38,7 +38,8 @@ fluidPage(
     ),
     
     mainPanel(
-      fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("keysout"))
+      width = 6,
+      fluidRow(style = 'overflow-x: auto',DT::dataTableOutput("out"))
      
     )
   )

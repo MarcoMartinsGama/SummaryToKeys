@@ -12,6 +12,16 @@ library(dplyr)
 
 function(input,output,session){
   
+  # Render and read summary.txt
+  observeEvent(input$summaryfile,{
+  output$out <-  renderDT({req(input$summaryfile)
+    summary<- read.table(input$summaryfile$datapath,
+                         header=TRUE,
+                         sep="\t") 
+    return(summary)
+  }, rownames = FALSE) 
+    })
+  
   # Control ID saving
   
   ControlID <- reactiveValues(value = character(0))
@@ -84,7 +94,7 @@ function(input,output,session){
     keys$df <- keys$df %>%
       mutate(Condition= remove_strings(Condition, 
                                        ReplicateNames)) # Remove replicate names in Condition column
-    output$keysout <- renderDataTable(keys$df, rownames = FALSE) # Render the keys table
+    output$out <- renderDataTable(keys$df, rownames = FALSE) # Render the keys table
   })
   
   output$keys <- downloadHandler(filename = function(){ # Download keys.txt with button
