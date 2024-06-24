@@ -12,25 +12,14 @@ library(dplyr)
 
 function(input,output,session){
   
+  # Control ID saving
   
-      # Render and read summary.txt
-  
-      output$summaryout <- renderDataTable({req(input$summaryfile)
-        summary<- read.table(input$summaryfile$datapath,
-                             header=TRUE,
-                             sep="\t") 
-                  return(summary)
-        }, rownames = FALSE)
-
-      
-      # Control ID saving
-      
   ControlID <- reactiveValues(value = character(0))
   observeEvent(input$ControlNameSave, {
     ControlID$value <- input$ControlName
     output$ControlIDOutput <- renderText({"Saved !, make sure only controls contain this name"})
   })
-    # Replicate IDs, manage rows and save
+  # Replicate IDs, manage rows and save
   values <- reactiveValues(rows = 4, replicate_names = character(0)) # Create 4 rows to write in
   
   observeEvent(input$add_row, {
@@ -57,7 +46,7 @@ function(input,output,session){
     output$replicate_names_output <- renderText({"Saved !"})
   }) # Save Replicate names with a button
   
-
+  
   # Convert summary.txt to keys.txt
   
   keys <- reactiveValues(df = NULL) # Create empty dataframe "keys"
@@ -99,8 +88,8 @@ function(input,output,session){
   })
   
   output$keys <- downloadHandler(filename = function(){ # Download keys.txt with button
-  "keys.txt"},content= function(file){
-    write.table(keys$df,file,row.names = FALSE,sep = "\t")
-  },
-  contentType = "text/plain" ) 
+    "keys.txt"},content= function(file){
+      write.table(keys$df,file,row.names = FALSE,sep = "\t")
+    },
+    contentType = "text/plain" ) 
 }
