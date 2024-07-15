@@ -99,6 +99,6 @@ library(dplyr)
   
   output$downloadkeys <- downloadHandler(filename = function(){
   "keys.txt"},content= function(file){
-    write.table(keys$df,file,row.names = FALSE,sep = "\t")
+    write.table(keys$df,file,row.names = FALSE,sep = "\t",quote = FALSE)
   }) # Download keys.txt with button
 }
